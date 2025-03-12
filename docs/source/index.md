@@ -101,11 +101,11 @@ See all {octicon}`arrow-right`
 ::::{grid} 2
 :::{grid-item}
 :columns: 3
-```{image} _static/theme/SVG/how-to.svg
+```{image} _static/theme/SVG/How-to.svg
 :alt: Description of the image
 :class: only-light
 ```
-```{image} _static/theme/SVG/how-to-dark.svg
+```{image} _static/theme/SVG/How-to-dark.svg
 :alt: Description of the image
 :class: only-dark
 ```

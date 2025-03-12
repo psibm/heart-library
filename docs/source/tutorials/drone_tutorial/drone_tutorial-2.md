@@ -72,11 +72,11 @@ An adversary could introduce nearly imperceptible perturbations into input image
 :::
 
 :::{grid-item-card} Evasion Attacks
-PGD could be employed to create adversarial patches or stickers, which, when applied to objects like vehicles or weapons, might make them appear benign to the model. This could enable adversaries to hide threats or impersonate friendly forces.
+Evasion attacks can take the form of adversarial patches or stickers, which, when applied to objects like vehicles or weapons, might make them disappear to the model. This could enable adversaries to hide threats or impersonate friendly forces.
 :::
 
 :::{grid-item-card} Adaptive Attacks
-More sophisticated adversaries might use PGD in an adaptive manner, refining their attack strategy based on the model's responses. This could involve iteratively generating and applying adversarial examples until the model consistently misclassifies targeted objects.
+Attacks are generally independent from the model, although they often rely on the model’s specific gradients. However, in the case of defenses or very particular models, it may be necessary to tailor an attack to model specifics, for example a rejection threshold. Such attacks are called adaptive.
 :::
 
 ::::

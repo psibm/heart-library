@@ -35,7 +35,7 @@ In Part 3, you will learn how to use various techniques to **defend** the model 
 
 ## Defending the Model
 
-The first defense method Amelia will use is **JPEG compression**.  JPEG compression can help to defend against adversarial attacks by "compressing away" visually imperceptible pixel manipulations that are often used in adversarial attacks.  This makes these types of attacks less effective when the image is fed into a classification model.
+The first defense method Amelia will use is **JPEG compression**.  JPEG compression can help to defend against adversarial attacks by "compressing away" visually imperceptible pixel manipulations that are often used in adversarial attacks.  This makes these types of attacks less effective when the image is fed into an object detector.
 
 ```python
 preprocessing_defense = JpegCompression(clip_values=(0,1),
@@ -160,7 +160,7 @@ Next, Amelia will use an **Adaptive Patch Attack** to work around this type of d
 ```{admonition} Patch Attack Method
 :class: seealso
 
-Definition: A patch attack, in the context of computer vision and deep learning, is a type of adversarial attack where an attacker creates a specific, often small, patch (like a sticker) that, when placed on an image, can cause a machine learning model to misclassify the image.  You can learn more about Patch attacks [here](#).
+Definition: A patch attack, in the context of computer vision, is a type of adversarial attack where an attacker creates a specific, often small, patch (like a sticker) that, when placed on an image, can cause a machine learning model to misclassify the image.  You can learn more about Patch attacks [here](#).
 ```
 
 ```python
@@ -237,25 +237,7 @@ Description of what is in this image
 :::
 ::::
 
-```python
-adv_detections = detector_defended(px_adv)
-for i in range(len(px_adv)): #to see all, use range(len(adv_detections)): 
-    preds_orig = extract_predictions(adv_detections[i], 0.5)
-    plot_image_with_boxes(img=px_adv[i].transpose(1,2,0).copy(),
-                          boxes=preds_orig[1], pred_cls=preds_orig[0], title="Detections")
-```
 
-:::: {grid} 2
-::: {grid-item} 
-```{image} /_static/tutorial-drone/dt-p3-6.png
-:alt: Part 1 - Image 2
-```
-:::
-
-::: {grid-item}
-Description of what is in this image
-:::
-::::
 
 As expected, Amelia sees little difference between the original, undefended and the defended model, highliting the need for good T&E once more. 
 

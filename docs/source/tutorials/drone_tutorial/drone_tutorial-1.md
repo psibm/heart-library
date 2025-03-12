@@ -135,6 +135,8 @@ By addressing these prerequisites and preparing adequately, Amelia sets the stag
 ### Libraries Import
 To get started, Amelia imports all necessary libraries to use HEART. First, she imports general libraries such as numpy, functools, and matplotlib.pyplot.  Next, she loads relevant methods from the Adversarial Robustness Toolkit (ART) that HEART extends. After importing the ART libraries, Amelia then loads the corresponding HEART functionality and specific Torch functions to support the model. Lastly, she uses a command to plot within the notebook.
 
+:::{dropdown} {octicon}`code` Code: Import Statements for Necessary Libraries
+
 ```python 
 # general imports
 import numpy as np
@@ -181,9 +183,14 @@ plt.style.use('ggplot')
 %matplotlib inline
 ```
 
+:::
+
+
 ### Loading Drone Dataset and Object Detection Model
 
 Before loading data and model, Amelia defines a few different methods that she will use later on with the drone data. These include getting predictions with a confidence threshold, plotting images with the predicted bounding boxes, and a special wrapper for image data.
+
+:::{dropdown} {octicon}`code` Code: Defining Methods for Use Later with Drone Data
 
 ```python
 # given a confidence threshold, determine which of the mdoel's predictions are relevent
@@ -279,13 +286,9 @@ class TargetedImageDataset:
         targeted_detection.labels = [self.target_label]*len(targeted_detection.boxes)
         return (image, targeted_detection, {})
 ```
+:::
 
-```{admonition} Note: Define the Labels
-:class: tip
-
-Before loading the data, Amelia definse the labels for the bounding boxes. Afterwards, she loads only a small number of samples to save compute when using this notebook.
-
-```
+Before loading the data, Amelia defines the labels for the bounding boxes. Afterwards, she loads only a small number of samples to save compute when using this notebook.
 
 
 ```python
@@ -333,6 +336,13 @@ sample_data = sample_data.map(lambda x: {"image": preprocess(x["image"]), "label
 
 Amelia finishes by loading an object detector based on ResNet50, which she wraps as a JATIC classifier for further evaluation and inspect to classified images.
 
+```{warning} Method Required
+If you did not defining methods for for use later with the drone data above, you will need the following to run the code below:
+    
+    from heart_library.estimators.object_detection import JaticPyTorchObjectDetector
+    
+```
+
 ```python
 MEAN = [0.485, 0.456, 0.406]
 STD = [0.229, 0.224, 0.225] 
@@ -354,30 +364,81 @@ for i in range(2): # to plot all: range(len(sample_data))):
 ```
 
 ### Image Outputs
-
-:::: {grid} 2
+Amelia reviews the image outputs (below) that show example object detection ouputs. She overlays the predictions from the output detector (light green) in terms of bounding boxes (squares) and class (text) with the input image. 
+::::: {grid} 2
+:::: {grid}
 ::: {grid-item} 
+:columns: 12
+#### Example Detector Output 1
 ```{image} /_static/tutorial-drone/dt-p1-1.png
 :alt: Part 1 - Image 1
 ```
 :::
 
 ::: {grid-item}
+:columns: 12
 Description of what is in this image
 :::
 ::::
 
-:::: {grid} 2
+:::: {grid} 
 ::: {grid-item} 
+:columns: 12
+#### Example Detector Output 2
 ```{image} /_static/tutorial-drone/dt-p1-2.png
 :alt: Part 1 - Image 2
 ```
 :::
 
 ::: {grid-item}
+:columns: 12
 Description of what is in this image
 :::
 ::::
+:::::
+
+### Confirming Model Performance
+To confirm that the model is performing properlty, Amelia computes the average precision metric from HEART using Mean Average Precision (MAP).  This metric combines the overlap and union of the predicted and ground truth bounding boxes to give an estimate of the goodness of the object detector, outputting a value between 0 (poor performance) and 1 (good performance). [Reference](https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173)
+    
+
+```{warning} 
+
+If you did not defining methods for for use later with the drone data above, you will need the following to run the code below:
+    
+    from heart_library.metrics import HeartMAPMetric
+    
+```
+
+```python
+map_args = {"box_format": "xyxy",
+            "iou_type": "bbox",
+            "iou_thresholds": [0.5],
+            "rec_thresholds": [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+            "max_detection_thresholds": [1, 10, 100],
+            "class_metrics": False,
+            "extended_summary": False,
+            "average": "macro"}
+
+data_with_detections = ImageDataset(sample_data, deepcopy(detections), threshold=0.9)
+
+metric = HeartMAPMetric(**map_args)
+
+results, _, _ = evaluate(
+    model=detector, 
+    dataset=data_with_detections,
+    metric=metric,
+)
+
+pprint(results)
+```
+#### Mean Average Precision Output
+Amelia can see that the performance is indeed valid as the MAP on the five test images is 1.
+
+```python Benign evaluation:
+{'classes': tensor([ 1,  2,  3,  6,  8, 10, 15, 28, 35, 36, 77], dtype=torch.int32),
+ 'map_50': tensor(1.),
+}
+```
 
 <hr style="margin-bottom:60px;">
 
