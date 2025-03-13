@@ -92,7 +92,7 @@ ENV/
 
 # ignore pictures
 *.jpg
-!docs/source/_static/*.jpg
+!docs/source/_static/*
 
 demo/pics/*
 
