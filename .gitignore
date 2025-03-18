@@ -90,9 +90,7 @@ ENV/
 # ignore local config
 *config.ini
 
-# ignore pictures
-*.jpg
-!docs/source/_static/*
+
 
 demo/pics/*
 
