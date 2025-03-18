@@ -288,7 +288,7 @@ class TargetedImageDataset:
 ```
 :::
 
-Before loading the data, Amelia defines the labels for the bounding boxes. Afterwards, she loads only a small number of samples to save compute when using this notebook.
+Before loading the data, Amelia loads the labels for the bounding boxes. She defines the standardized labels that are provided from the evaluation data set. Afterwards, she loads only a small number of samples to save compute when using this notebook.
 
 
 ```python
@@ -336,12 +336,12 @@ sample_data = sample_data.map(lambda x: {"image": preprocess(x["image"]), "label
 
 Amelia finishes by loading an object detector based on ResNet50, which she wraps as a JATIC classifier for further evaluation and inspect to classified images.
 
-```{warning} Method Required
+<!-- ```{warning} 
 If you did not defining methods for for use later with the drone data above, you will need the following to run the code below:
     
     from heart_library.estimators.object_detection import JaticPyTorchObjectDetector
     
-```
+``` -->
 
 ```python
 MEAN = [0.485, 0.456, 0.406]
@@ -365,10 +365,12 @@ for i in range(2): # to plot all: range(len(sample_data))):
 
 ### Image Outputs
 Amelia reviews the image outputs (below) that show example object detection ouputs. She overlays the predictions from the output detector (light green) in terms of bounding boxes (squares) and class (text) with the input image. 
-::::: {grid} 2
+
+:::::::{tab-set}
+::::::{tab-item} Example Image 1
 :::: {grid}
 ::: {grid-item} 
-:columns: 12
+:columns: 6
 #### Example Detector Output 1
 ```{image} /_static/tutorial-drone/dt-p1-1.png
 :alt: Part 1 - Image 1
@@ -376,14 +378,16 @@ Amelia reviews the image outputs (below) that show example object detection oupu
 :::
 
 ::: {grid-item}
-:columns: 12
-Description of what is in this image
+:columns: 6
+:child-align: center
+This image shows an overhead image taken from a drone flying over a street.  Many different objects are detected including people, trucks, and cars.  These are displayed inside the bright green bounding boxes.
 :::
 ::::
-
-:::: {grid} 
+::::::
+:::::: {tab-item} Example Image 2
+:::: {grid} 2
 ::: {grid-item} 
-:columns: 12
+:columns: 6
 #### Example Detector Output 2
 ```{image} /_static/tutorial-drone/dt-p1-2.png
 :alt: Part 1 - Image 2
@@ -391,23 +395,25 @@ Description of what is in this image
 :::
 
 ::: {grid-item}
-:columns: 12
-Description of what is in this image
+:columns: 6
+:child-align: center
+This is a different image that also shows an overhead image taken from a drone flying over a street.  Many of the same types of objects are detected including people, trucks, and cars.  
 :::
 ::::
-:::::
+::::::
+:::::::
 
 ### Confirming Model Performance
 To confirm that the model is performing properlty, Amelia computes the average precision metric from HEART using Mean Average Precision (MAP).  This metric combines the overlap and union of the predicted and ground truth bounding boxes to give an estimate of the goodness of the object detector, outputting a value between 0 (poor performance) and 1 (good performance). [Reference](https://jonathan-hui.medium.com/map-mean-average-precision-for-object-detection-45c121a31173)
     
 
-```{warning} 
+<!-- ```{warning} 
 
 If you did not defining methods for for use later with the drone data above, you will need the following to run the code below:
     
     from heart_library.metrics import HeartMAPMetric
     
-```
+``` -->
 
 ```python
 map_args = {"box_format": "xyxy",
@@ -432,7 +438,7 @@ results, _, _ = evaluate(
 pprint(results)
 ```
 #### Mean Average Precision Output
-Amelia can see that the performance is indeed valid as the MAP on the five test images is 1.
+Amelia can see that the performance is indeed valid as the MAP on the five test images is 1.  The value of 1 means that the outputs are 100% aligned to the "ground truth" of the data set.
 
 ```python Benign evaluation:
 {'classes': tensor([ 1,  2,  3,  6,  8, 10, 15, 28, 35, 36, 77], dtype=torch.int32),
